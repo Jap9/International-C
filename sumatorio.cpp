@@ -3,7 +3,10 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <ctime>
+#include <locale.h>
+#include <libintl.h>
 #define _(STRING) gettext(STRING)
+
 
 struct arg_struct {
     int arg1;
@@ -15,21 +18,20 @@ using namespace std;
 void *prime(void * arguments);
 long counter = 0;
 
+
 int main(int argc, char* argv[])
 {
 
- /* Setting the i18n environment */
-  setlocale (LC_ALL, "");
-  bindtextdomain ("international", "/usr/share/locale/");
-  textdomain ("international");
-
-  /* Example of i18n usage */
-  printf(_("Hello World\n"));
+ 	
+	/* Setting the i18n environment */
+	setlocale (LC_ALL, "");
+ 	bindtextdomain ("sumatorio", "/usr/share/locale/");
+  	textdomain ("sumatorio");
 
 	if(argc < 3)
 	{
-		printf("Error en los parametros de entrada.\n");
-		printf("Uso: ./sumatorio [Max num] [Threads]\n");
+		printf(_("Error en los parametros de entrada.\n"));
+		printf(_("Uso: ./sumatorio [Max num] [Threads]\n"));
 		exit(-1);
 	}
 
@@ -38,14 +40,14 @@ int main(int argc, char* argv[])
 
 	if( NUM_THREADS == 0 || NUM_PRIME == 0 && NUM_THREADS > NUM_PRIME )
 	{
-		printf("El numero de threads no puede ser mayor que el de primeros.");
+		printf(_("El numero de threads no puede ser mayor que el de primeros."));
 		exit(-1);
 	}
 
-	printf("\nSumatorio de los %i numeros primeros.\nUsando %i hilos.\n", NUM_PRIME, NUM_THREADS);
+	printf(_("\nSumatorio de los %i numeros primeros.\nUsando %i hilos.\n"), NUM_PRIME, NUM_THREADS);
 
 	int NUM_WORKLOAD = NUM_PRIME / NUM_THREADS;
-	printf("Cada hilo 'm' se encarga de %i digitos.\n\n", NUM_WORKLOAD);
+	printf(_("Cada hilo 'm' se encarga de %i digitos.\n\n"), NUM_WORKLOAD);
 
 
 	pthread_t threads[NUM_THREADS];
@@ -66,7 +68,7 @@ int main(int argc, char* argv[])
 		
 		if(pthread_create(&threads[i], NULL ,&prime, (void *)&args[i]) != 0)
 		{
-			printf("Error creando thread.\n");
+			printf(_("Error creando thread.\n"));
 			exit(-1);
 		} 
 	}
@@ -75,12 +77,12 @@ int main(int argc, char* argv[])
        		 pthread_join(threads[i], NULL);
     	}
 
-	printf("Resultado: %ld\n", counter);
+	printf(_("Resultado: %ld\n"), counter);
 
 	//int stop_s=clock();
 	//cout << "Tiemo (ms): " << (stop_s-start_s)/double(CLOCKS_PER_SEC)*1000 << endl;
 
-	printf("\nFinal de la ejecución del programa.\n");
+	printf(_("\nFinal de la ejecucion del programa.\n"));
  	return 0;
 }
 
@@ -98,7 +100,7 @@ void *prime(void * arguments)
 	}
 
     
-	printf("Thread %ld ha calculado los primeros desde %i hasta %i, suma parcial: %ld\n", pthread_self(), inicio, fin, sum );
+	printf(_("Thread %ld ha calculado los primeros desde %i hasta %i, suma parcial: %ld\n"), pthread_self(), inicio, fin, sum );
 	counter += sum;
 }
 
